@@ -64,7 +64,9 @@ const FileUploader: React.FunctionComponent<IFileUploaderProps> = ({
     <div>
       <lr-config
         ctx-name="my-uploader"
-        pubkey="74e63f3a7042561655f6"
+        sourceList="local, url, camera, dropbox"
+        classNameUploader="uc-light"
+        pubkey="557c41f55e4a9d436381"
         multiple={true}
         confirmUpload={false}
         removeCopyright={true}
