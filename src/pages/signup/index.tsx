@@ -79,7 +79,7 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
               <form onSubmit={handleSubmit}>
                 <CardHeader className="space-y-1">
                   <CardTitle className="text-2xl text-center mb-4">
-                    PhotoGram
+                    LoopConnect
                   </CardTitle>
                   <CardDescription>
                     Enter your email below to create your account
@@ -107,7 +107,7 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="dipesh@example.com"
+                      placeholder="shubham@example.com"
                       value={userInfo.email}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setUserInfo({ ...userInfo, email: e.target.value })
