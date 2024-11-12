@@ -5,9 +5,7 @@ import { DocumentResponse, Post } from "@/types";
 import { HeartIcon } from "lucide-react";
 import * as React from "react";
 
-interface IMyPhotosProps {}
-
-const MyPhotos: React.FunctionComponent<IMyPhotosProps> = () => {
+const MyPhotos: React.FunctionComponent = () => {
   const { user } = useUserAuth();
   const [data, setData] = React.useState<DocumentResponse[]>([]);
 
@@ -37,27 +35,27 @@ const MyPhotos: React.FunctionComponent<IMyPhotosProps> = () => {
   React.useEffect(() => {
     if (user != null) {
       getAllPost(user.uid);
-    } 
-  }, []);
+    }
+  }, [user]); // Add user as a dependency
 
   const renderPost = () => {
-    return data.map((item) => {
-      return (
-        <div key={item.photos[0].uuid} className="relative">
-          <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
-            <div className="flex flex-col justify-center items-center w-full h-full">
-              <HeartIcon className="hidden group-hover:block fill-white" />
-              <div className="hidden group-hover:block text-white">
-                {item.likes} likes
-              </div>
+    return data.map((item) => (
+      <div key={item.photos[0].uuid} className="relative">
+        <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
+          <div className="flex flex-col justify-center items-center w-full h-full">
+            <HeartIcon className="hidden group-hover:block fill-white" />
+            <div className="hidden group-hover:block text-white">
+              {item.likes} likes
             </div>
           </div>
-          <img
-            src={`${item.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-          />
         </div>
-      );
-    });
+        <img
+          src={`${item.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+          onError={() => console.error("Image failed to load:", item.photos[0].cdnUrl)}
+          alt="User uploaded content"
+        />
+      </div>
+    ));
   };
 
   return (
@@ -69,7 +67,7 @@ const MyPhotos: React.FunctionComponent<IMyPhotosProps> = () => {
           </h3>
           <div className="p-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {data ? renderPost() : <div>...Loading</div>}
+              {data.length > 0 ? renderPost() : <div>...Loading</div>}
             </div>
           </div>
         </div>
