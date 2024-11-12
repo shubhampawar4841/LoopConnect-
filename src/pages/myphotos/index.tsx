@@ -8,8 +8,10 @@ import * as React from "react";
 const MyPhotos: React.FunctionComponent = () => {
   const { user } = useUserAuth();
   const [data, setData] = React.useState<DocumentResponse[]>([]);
+  const [loading, setLoading] = React.useState(true); // Add loading state
 
   const getAllPost = async (id: string) => {
+    setLoading(true); // Set loading to true on data fetch
     try {
       const querySnapshot = await getPostByUserId(id);
       const tempArr: DocumentResponse[] = [];
@@ -20,23 +22,24 @@ const MyPhotos: React.FunctionComponent = () => {
             id: doc.id,
             ...data,
           };
-          console.log("The response object is : ", responseObj);
           tempArr.push(responseObj);
         });
         setData(tempArr);
       } else {
-        console.log("No such document");
+        console.log("No documents found");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false); // Stop loading after fetching data
     }
   };
 
   React.useEffect(() => {
-    if (user != null) {
+    if (user) {
       getAllPost(user.uid);
     }
-  }, [user]); // Add user as a dependency
+  }, [user]);
 
   const renderPost = () => {
     return data.map((item) => (
@@ -51,7 +54,10 @@ const MyPhotos: React.FunctionComponent = () => {
         </div>
         <img
           src={`${item.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-          onError={() => console.error("Image failed to load:", item.photos[0].cdnUrl)}
+          onError={(e) => {
+            e.currentTarget.src = "/path/to/fallback-image.jpg"; // Optional fallback image
+            console.error("Image failed to load:", item.photos[0].cdnUrl);
+          }}
           alt="User uploaded content"
         />
       </div>
@@ -67,7 +73,13 @@ const MyPhotos: React.FunctionComponent = () => {
           </h3>
           <div className="p-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {data.length > 0 ? renderPost() : <div>...Loading</div>}
+              {loading ? (
+                <div>Loading...</div> // Show loading text while fetching data
+              ) : data.length > 0 ? (
+                renderPost()
+              ) : (
+                <div>No posts available.</div> // Show this if no posts are found
+              )}
             </div>
           </div>
         </div>
