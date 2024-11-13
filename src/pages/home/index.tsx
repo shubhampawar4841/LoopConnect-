@@ -10,19 +10,19 @@ import { getPosts } from "@/repository/post.service";
 
 interface IHomeProps {}
 
-const Home: React.FunctionComponent<IHomeProps> = () => {
-  const {user}=useUserAuth();
-  const [data,setData]=React.useState<DocumentResponse[]>([]);
-  const getAllPost=async () => {
-    const response:DocumentResponse[]=(await getPosts())
-    console.log("ALl post are :", response)
-    setData(response);
-  };
-  React.useEffect(() => {
-    if(user != null) {
-      getAllPost();
-    }
-  },[]);
+// const Home: React.FunctionComponent<IHomeProps> = () => {
+//   const {user}=useUserAuth();
+//   const [data,setData]=React.useState<DocumentResponse[]>([]);
+//   const getAllPost=async () => {
+//     const response:DocumentResponse[]=(await getPosts())
+//     console.log("ALl post are :", response)
+//     setData(response);
+//   };
+//   React.useEffect(() => {
+//     if(user != null) {
+//       getAllPost();
+//     }
+//   },[]);
 
   const renderPost = () => {
     return data.map((item) => {
