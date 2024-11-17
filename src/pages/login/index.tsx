@@ -80,7 +80,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
               <form onSubmit={handleSubmit}>
                 <CardHeader className="space-y-1">
                   <CardTitle className="text-2xl text-center mb-4">
-                    PhotoGram
+                    LoopConnect
                   </CardTitle>
                   <CardDescription>
                     Enter your email below to create your account
@@ -108,7 +108,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="dipesh@example.com"
+                      placeholder="shubham@example.com"
                       value={userLogInInfo.email}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setuserLogInInfo({

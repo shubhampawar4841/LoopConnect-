@@ -19,10 +19,11 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
     setData(response);
   };
   React.useEffect(() => {
-    if(user != null) {
+    if (user) {
       getAllPost();
     }
-  },[]);
+  }, [user]); // Re-run if `user` changes
+  
 
   const renderPost = () => {
     return data.map((item) => {

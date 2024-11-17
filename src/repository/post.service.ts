@@ -18,28 +18,32 @@ export const createPost = (post: Post) => {
   return addDoc(collection(db, COLLECTION_NAME), post);
 };
 
-export const getPosts = async() => {
-  try{
-    const q = query(collection(db, COLLECTION_NAME), where("userId", "==", id));
-    const querySnapshot =await getDocs(q);
-    const tempArr:DocumentResponse[] = [];
-  if(querySnapshot.size > 0) {
-    querySnapshot.forEach((doc) => {
-      const data= doc.data() as Post;
-      const responseObj: DocumentResponse = {
-        id: doc.id,
-        ...data,
-      };
-      tempArr.push(responseObj);
-    });
-    return tempArr;
-  } else {
-    console.log("No such document");
+export const getPosts = async () => {
+  try {
+    const q = query(collection(db, COLLECTION_NAME)); // Adjust query based on requirements
+    const querySnapshot = await getDocs(q);
+    const tempArr: DocumentResponse[] = [];
+
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach((doc) => {
+        const data = doc.data() as Post;
+        const responseObj: DocumentResponse = {
+          id: doc.id,
+          ...data, // Ensure data matches DocumentResponse structure
+        };
+        tempArr.push(responseObj);
+      });
+      return tempArr;
+    } else {
+      console.log("No documents found.");
+      return []; // Return an empty array instead of undefined
+    }
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return []; // Return an empty array in case of an error
   }
-}catch(error) {
-  console.log(error);
-}
 };
+
 
 export const getPostByUserId = (id: string) => {
   const q = query(collection(db, COLLECTION_NAME), where("userId", "==", id));
