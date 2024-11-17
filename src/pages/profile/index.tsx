@@ -1,107 +1,87 @@
-import Layout from "@/components/layout";
-import { getPostByUserId } from "@/repository/post.service";
-import { userInfo } from "os";
-import * as React from "react";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { MapPin, LinkIcon, Calendar } from 'lucide-react'
 
-interface IProfileProps {}
+interface ProfileSectionProps {
+  coverImage: string
+  profileImage: string
+  name: string
+  username: string
+  bio: string
+  location: string
+  website: string
+  joinDate: string
+  posts: number
+  followers: number
+  following: number
+}
 
-const Profile: React.FunctionComponent<IProfileProps> = () => { 
-  const { user } = useUserAuth();
-  const initialUserinfo: ProfileResponse = {
-    id: "",
-    userId: user?.uid,
-    userBio: "please update to bio",
-    photoURL: user?.photoURL ? user.photoURL : "",
-    displayName: user?.displayName ? user.displayName : "Guest",
-  };
-  const [userInfo, setUserInfo] = React.useState<ProfileResponse>(initialUserinfo);
-  const [data, setData] = React.useState<DocumentResponse[]>([]);
-  
-  const getAllPost = async (id: string) => {
-    try {
-      const querySnapshot = await getPostByUserId(id);
-      const tempArr: DocumentResponse[] = [];
-      if (querySnapshot.size > 0) {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as Post;
-          const responseObj: DocumentResponse = {
-            id: doc.id,
-            ...data,
-          };
-          console.log("The response object is : ", responseObj);
-          tempArr.push(responseObj);
-        });
-        setData(tempArr);
-      } else {
-        console.log("No such document");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  React.useEffect(() => {
-    if (user != null) {
-      getAllPost(user.uid);
-    }
-  }, [user]);
-
-  const renderPosts = () => {
-    return data.map((item) => {
-      return (
-        <div key={item.photos[0].uuid} className="relative">
-          <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
-            <div className="flex flex-col justify-center items-center w-full h-full">
-              <HeartIcon className="hidden group-hover:block fill-white" />
-              <div className="hidden group-hover:block text-white">
-                {item.likes} likes
-              </div>
-            </div>
-          </div>
-          <img
-            src={`${item.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-          />
-        </div>
-      );
-    });
-  };
+export default function ProfileSection({
+  coverImage,
+  profileImage,
+  name = '', // Default fallback if 'name' is not provided
+  username,
+  bio,
+  location,
+  website = '', // Default fallback if 'website' is not provided
+  joinDate,
+  posts,
+  followers,
+  following
+}: ProfileSectionProps) {
+  // Ensure 'website' is a string before calling replace
+  const formattedWebsite = website ? website.replace(/^https?:\/\//, '') : 'No website provided';
 
   return (
-    <Layout>
-      <div className="flex justify-center">
-        <div className="border max-w-3xl w-full">
-          <h3 className="bg-slate-800 text-white">Profile</h3>
-          <div className="p-8 pb-4 border-b">
-            <div className="flex flex-row items-center pb-2">
-              <div className="mr-2">
-                <img
-                  src={userInfo.photoURL ? userInfo.photoURL : ""}
-                  alt="avatar"
-                  className="w-28 h-28 rounded-full border-spacing-2"
-                />
-              </div>
-              <div className="text-xl ml-3">{userInfo.displayName}</div>
-              <div className="text-xl ml-3">
-                {user?.email ? user.email : ""}
-              </div>
-            </div>
+    <Card className="w-full max-w-3xl mx-auto overflow-hidden">
+      <div className="h-48 overflow-hidden">
+        <img src={coverImage} alt="Cover" className="w-full object-cover" />
+      </div>
+      <CardContent className="relative pt-12 px-4 sm:px-6">
+        <Avatar className="absolute -top-16 left-4 sm:left-6 w-32 h-32 border-4 border-background">
+          <AvatarImage src={profileImage} alt={name} />
+          <AvatarFallback>{name ? name.slice(0, 2).toUpperCase() : 'NN'}</AvatarFallback>
+        </Avatar>
+        <div className="flex justify-end mb-4">
+          <Button variant="outline">Edit profile</Button>
+        </div>
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold">{name}</h1>
+          <p className="text-muted-foreground">@{username}</p>
+        </div>
+        <p className="mt-3">{bio}</p>
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center text-muted-foreground">
+            <MapPin className="mr-2 h-4 w-4" />
+            <span>{location}</span>
           </div>
-          <div className="mb-4">{userInfo.userBio}</div>
-          <div>
-            <Button onClick={editProfile}>
-              <Edit2Icon className="mr-2 h-4 w-4">Edit Profile</Edit2Icon>
-            </Button>
+          <div className="flex items-center text-muted-foreground">
+            <LinkIcon className="mr-2 h-4 w-4" />
+            <a href={website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              {formattedWebsite}
+            </a>
           </div>
-          <div className="p-8">
-            <h2 className="mb-5">My Posts</h2>
-            <div className="grid grid-col-2 md:grid-cols-3 gap-2">
-              {data ? renderPosts() : <div>...Loading</div>}
-            </div>
+          <div className="flex items-center text-muted-foreground">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>Joined {joinDate}</span>
           </div>
         </div>
-      </div>
-    </Layout>
-  );
-};
-
-export default Profile;
+        <div className="flex space-x-4 mt-4">
+          <div>
+            <span className="font-bold">{posts}</span>{" "}
+            <span className="text-muted-foreground">Posts</span>
+          </div>
+          <div>
+            <span className="font-bold">{followers}</span>{" "}
+            <span className="text-muted-foreground">Followers</span>
+          </div>
+          <div>
+            <span className="font-bold">{following}</span>{" "}
+            <span className="text-muted-foreground">Following</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
