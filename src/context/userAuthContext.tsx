@@ -8,7 +8,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebaseConfig";
+import { auth } from "../utils/firebase";
 
 interface IUserAuthProviderProps {
   children: React.ReactNode;

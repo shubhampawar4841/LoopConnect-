@@ -1,61 +1,75 @@
-import { OutputFileEntry } from "@uploadcare/blocks";
+import { OutputFileEntry } from '@uploadcare/blocks'
+import { User } from 'firebase/auth'
 
-
-export interface UserLogIn {
-  email: string;
-  password: string;
+interface UserSignIn {
+  email: string
+  password: string
+  confirmPassword: string
 }
-export interface UserSignIn {
-  email: string;
-  password: string;
-  confirmPassword: string;
+interface UserLogIn {
+  email: string
+  password: string
 }
-
-export interface FileEntry {
-  files: OutputFileEntry[];
-}
-
-export interface Post {
-  caption: string;
-  photos: PhotoMeta[];
-  likes: number;
-  userlikes: [];
-  userId: string | null;
-  date: Date;
+interface NavItem {
+  name: string
+  link: string
+  icon: (props?: React.SVGProps<SVGSVGElement>) => JSX.Element
 }
 
-export interface PhotoMeta {
-  cdnUrl: string;
-  uuid: string;
+interface FileEntry {
+  files: OutputFileEntry[]
 }
 
-export interface DocumentResponse {
-  id: string;
-  caption: string;
-  photos: PhotoMeta[];
-  likes: number;
-  userlikes: [];
-  userId: string | null;
-  date: Date;
+interface Post {
+  caption: string
+  photos: PhotoMeta[]
+  likes: number
+  userLikes: string[]
+  userId?: string
+  userName?: string
+  photoURL?: string
+  date: Date
 }
 
-export interface PorfileInfo {
-  user ? :User;
-  displayName? : string;
-  photoURL?:string;
+interface PhotoMeta {
+  cdnUrl: string | null
+  uuid: string | null
 }
 
-export interface userProfile {
-  userId?:string;
-  displayName?:string;
-  photoURL?:string;
-  userBio?:string;
+interface DocumentResponse {
+  id?: string
+  caption?: string
+  photos?: PhotoMeta[]
+  likes?: number
+  userLikes: string[]
+  userId?: string
+  userName?: string
+  photoURL?: string
+  date?: Date
 }
 
-export interface userProfile {
-  id?:string;
-  userId?:string;
-  displayName?:string;
-  photoURL?:string;
-  userBio?:string;
+interface LikesInfo {
+  likes?: number
+  isLike?: boolean
+}
+
+interface ProfileInfo {
+  user?: User
+  displayName?: string
+  photoURL?: string
+}
+
+interface UserProfile {
+  userId?: string
+  displayName?: string
+  photoURL?: string
+  userBio?: string
+}
+
+interface UserProfileResponse {
+  id?: string
+  userId?: string
+  displayName?: string
+  photoURL?: string
+  userBio?: string
 }

@@ -1,108 +1,88 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import * as LR from "@uploadcare/blocks";
-import { OutputFileEntry } from "@uploadcare/blocks";
-import blocksStyles from "@uploadcare/blocks/web/lr-file-uploader-regular.min.css?url";
-import { FileEntry } from "@/types";
+import '@uploadcare/react-uploader/core.css'
+import { useCallback, useRef, useState, type FC } from 'react'
 
-LR.registerBlocks(LR);
+import type { OutputFileEntry } from '@uploadcare/blocks'
+import { FileUploaderRegular } from '@uploadcare/react-uploader'
 
-interface IFileUploaderProps {
-  fileEntry: FileEntry;
-  onChange: (fileEntry: FileEntry) => void;
+interface IFileUploader {
+  files: OutputFileEntry[] | []
+  onChange: (files: OutputFileEntry[]) => void
+  preview: boolean
 }
 
-const FileUploader: React.FunctionComponent<IFileUploaderProps> = ({
-  fileEntry,
-  onChange,
-}) => {
-  const [uploadedFiles, setUploadedFiles] = useState<OutputFileEntry[]>([]);
-  const ctxProviderRef = useRef<
-    typeof LR.UploadCtxProvider.prototype & LR.UploadCtxProvider
-  >(null);
+const FileUploader: FC<IFileUploader> = ({ files, onChange, preview }) => {
+  const [uploadedFiles, setUploadedFiles] = useState<
+    OutputFileEntry<'success'>[]
+  >([])
+
+  const ctxProviderRef = useRef<InstanceType<UploadCtxProvider>>(null)
 
   const handleRemoveClick = useCallback(
-    (uuid: OutputFileEntry["uuid"]) =>
-      onChange({ files: fileEntry.files.filter((f) => f.uuid !== uuid) }),
-    [fileEntry.files, onChange]
-  );
+    (uuid: OutputFileEntry['uuid']) =>
+      onChange(files.filter((f) => f.uuid !== uuid)),
+    [files, onChange]
+  )
 
-  useEffect(() => {
-    const handleUploadEvent = (e: CustomEvent<OutputFileEntry[]>) => {
-      if (e.detail) {
-        console.log("The uploaded file event is ; ", e);
-        setUploadedFiles([...e.detail]);
-      }
-    };
-    ctxProviderRef.current?.addEventListener("data-output", handleUploadEvent);
-    return () => {
-      ctxProviderRef.current?.removeEventListener(
-        "data-output",
-        handleUploadEvent
-      );
-    };
-  }, [setUploadedFiles]);
+  const resetUploaderState = () =>
+    ctxProviderRef.current?.uploadCollection.clearAll()
 
-  useEffect(() => {
-    const resetUploaderState = () =>
-      ctxProviderRef.current?.uploadCollection.clearAll();
+  const handleModalCloseEvent = () => {
+    resetUploaderState()
 
-    const handleDoneFlow = () => {
-      resetUploaderState();
+    onChange([...files, ...uploadedFiles])
 
-      onChange({ files: [...uploadedFiles] });
-      setUploadedFiles([]);
-    };
+    setUploadedFiles([])
+  }
 
-    ctxProviderRef.current?.addEventListener("done-flow", handleDoneFlow);
-
-    return () => {
-      ctxProviderRef.current?.removeEventListener("done-flow", handleDoneFlow);
-    };
-  }, [fileEntry, onChange, uploadedFiles, setUploadedFiles]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChangeEvent = (files: any) => {
+    setUploadedFiles([
+      ...files.allEntries.filter(
+        (f: { status: string }) => f.status === 'success'
+      )
+    ] as OutputFileEntry<'success'>[])
+  }
 
   return (
-    <div>
-      <lr-config
-        ctx-name="my-uploader"
-        sourceList="local, url, camera, dropbox"
-        classNameUploader="uc-light"
-        pubkey="557c41f55e4a9d436381"
-        multiple={true}
+    <>
+      <FileUploaderRegular
+        imgOnly
+        multiple={preview}
+        sourceList='local, url, camera, dropbox, gdrive'
+        removeCopyright
         confirmUpload={false}
-        removeCopyright={true}
-        imgOnly={true}
-      ></lr-config>
+        apiRef={ctxProviderRef}
+        onModalClose={handleModalCloseEvent}
+        onChange={handleChangeEvent}
+        pubkey={import.meta.env.VITE_UPLOADECAREKEY}
+        className='uploader'
+      />
 
-      <lr-file-uploader-regular
-        ctx-name="my-uploader"
-        css-src={blocksStyles}
-      ></lr-file-uploader-regular>
+      {preview ? (
+        <div className='mt-8 grid grid-cols-2 gap-4'>
+          {files.map((file) => (
+            <div key={file.uuid} className='relative'>
+              <img
+                key={file.uuid}
+                src={`${file.cdnUrl}-/format/webp/-/quality/smart/-/stretch/fill/`}
+              />
 
-      <lr-upload-ctx-provider ctx-name="my-uploader" ref={ctxProviderRef} />
-
-      <div className="grid grid-cols-2 gap-4 mt-8">
-        {fileEntry.files.map((file) => (
-          <div key={file.uuid} className="relative">
-            <img
-              key={file.uuid}
-              src={`${file.cdnUrl}/-/format/webp/-/quality/smart/-/stretch/fill/
-              `}
-            />
-
-            <div className="cursor-pointer flex justify-center absolute -right-2 -top-2 bg-white border-2 border-slate-800  rounded-full w-7 h-7">
-              <button
-                className="text-slate-800 text-center"
-                type="button"
-                onClick={() => handleRemoveClick(file.uuid)}
-              >
-                ×
-              </button>
+              <div className='absolute -right-2 -top-2 flex h-7 w-7 cursor-pointer justify-center rounded-full border-2 border-slate-800 bg-white'>
+                <button
+                  className='text-center text-slate-800'
+                  type='button'
+                  onClick={() => handleRemoveClick(file.uuid)}
+                >
+                  ×
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default FileUploader;
+          ))}
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  )
+}
+export default FileUploader

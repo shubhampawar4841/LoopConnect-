@@ -1,87 +1,115 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, LinkIcon, Calendar } from 'lucide-react'
+import { Edit2Icon } from 'lucide-react'
+import { useContext, useEffect, useState, type FC } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-interface ProfileSectionProps {
-  coverImage: string
-  profileImage: string
-  name: string
-  username: string
-  bio: string
-  location: string
-  website: string
-  joinDate: string
-  posts: number
-  followers: number
-  following: number
-}
+//Context
+import { userAuthContext } from '@/context/userAuthContext'
 
-export default function ProfileSection({
-  coverImage,
-  profileImage,
-  name = '', // Default fallback if 'name' is not provided
-  username,
-  bio,
-  location,
-  website = '', // Default fallback if 'website' is not provided
-  joinDate,
-  posts,
-  followers,
-  following
-}: ProfileSectionProps) {
-  // Ensure 'website' is a string before calling replace
-  const formattedWebsite = website ? website.replace(/^https?:\/\//, '') : 'No website provided';
+//Types
+import type { DocumentResponse, UserProfileResponse } from '@/types'
+
+//Assets
+import avatar from '@/assets/images/avatar.png'
+
+//Services
+import { getPostByUserId } from '@/repository/post.service'
+import { getUserProfile } from '@/repository/userProfile.service'
+
+//Components
+import Layout from '@/components/layout'
+import { Button } from '@/components/ui/button'
+import { RenderPosts } from './RenderPost'
+
+const Profile: FC = () => {
+  const navigate = useNavigate()
+  const { user } = useContext(userAuthContext)
+  const [userData, setUserData] = useState<DocumentResponse[]>([])
+
+  const initialUserInfo: UserProfileResponse = {
+    id: '',
+    userId: user?.uid,
+    userBio: '',
+    photoURL: user?.photoURL ? user.photoURL : '',
+    displayName: user?.displayName ? user.displayName : 'Guest_user'
+  }
+  const [userInfo, setUserInfo] = useState<UserProfileResponse>(initialUserInfo)
+
+  const editProfile = () => {
+    navigate('/edit-profile', { state: userInfo })
+  }
+
+  const fetchData = async (id: string) => {
+    const res = await getPostByUserId(id)
+    if (res) setUserData(res)
+  }
+
+  const getUserProfileInfo = async (userId: string) => {
+    const data: UserProfileResponse = (await getUserProfile(userId)) || {}
+    if (data.displayName) {
+      setUserInfo(data)
+    }
+  }
+
+  useEffect(() => {
+    if (user != null) {
+      fetchData(user.uid)
+      getUserProfileInfo(user.uid)
+    }
+  }, [])
 
   return (
-    <Card className="w-full max-w-3xl mx-auto overflow-hidden">
-      <div className="h-48 overflow-hidden">
-        <img src={coverImage} alt="Cover" className="w-full object-cover" />
+    <Layout>
+      <div className='flex justify-center'>
+        <div className='w-full max-w-3xl border'>
+          <h3 className='bg-slate-800 p-2 text-center text-lg text-white'>
+            Profile
+          </h3>
+
+          <div className='border-b px-2 py-8 pb-4 lg:p-8'>
+            <div className='mb-2 flex flex-col items-center pb-2 lg:flex-row'>
+              <div className='mr-2'>
+                <img
+                  src={userInfo.photoURL ? userInfo.photoURL : avatar}
+                  alt='avatar'
+                  className='h-28 w-28 rounded-full border-2 border-slate-800 object-cover'
+                />
+              </div>
+
+              <div className='text-base lg:text-xl'>
+                <div className='ml-3'>
+                  {userInfo.displayName ? userInfo.displayName : 'Guest_user'}
+                </div>
+
+                <div className='ml-3'>{user?.email ? user.email : ''}</div>
+              </div>
+            </div>
+
+            <div className='mb-4'>
+              {userInfo.userBio
+                ? userInfo.userBio
+                : 'Please update your bio...'}
+            </div>
+
+            <div>
+              <Button onClick={editProfile}>
+                <Edit2Icon className='mr-2 h-4 w-4' /> Edit Profile
+              </Button>
+            </div>
+          </div>
+
+          <div className='px-2 py-8 pb-4 lg:p-8'>
+            <h2 className='mb-5'>My Posts</h2>
+            <div className='grid grid-cols-2 gap-2 md:grid-cols-3'>
+              {userData ? (
+                RenderPosts({ data: userData })
+              ) : (
+                <div>...Loading</div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <CardContent className="relative pt-12 px-4 sm:px-6">
-        <Avatar className="absolute -top-16 left-4 sm:left-6 w-32 h-32 border-4 border-background">
-          <AvatarImage src={profileImage} alt={name} />
-          <AvatarFallback>{name ? name.slice(0, 2).toUpperCase() : 'NN'}</AvatarFallback>
-        </Avatar>
-        <div className="flex justify-end mb-4">
-          <Button variant="outline">Edit profile</Button>
-        </div>
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">{name}</h1>
-          <p className="text-muted-foreground">@{username}</p>
-        </div>
-        <p className="mt-3">{bio}</p>
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center text-muted-foreground">
-            <MapPin className="mr-2 h-4 w-4" />
-            <span>{location}</span>
-          </div>
-          <div className="flex items-center text-muted-foreground">
-            <LinkIcon className="mr-2 h-4 w-4" />
-            <a href={website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              {formattedWebsite}
-            </a>
-          </div>
-          <div className="flex items-center text-muted-foreground">
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>Joined {joinDate}</span>
-          </div>
-        </div>
-        <div className="flex space-x-4 mt-4">
-          <div>
-            <span className="font-bold">{posts}</span>{" "}
-            <span className="text-muted-foreground">Posts</span>
-          </div>
-          <div>
-            <span className="font-bold">{followers}</span>{" "}
-            <span className="text-muted-foreground">Followers</span>
-          </div>
-          <div>
-            <span className="font-bold">{following}</span>{" "}
-            <span className="text-muted-foreground">Following</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    </Layout>
   )
 }
+export default Profile
