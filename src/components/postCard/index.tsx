@@ -15,9 +15,13 @@ const FALLBACK_AVATAR = '/path/to/fallback-avatar.jpg';
 
 const PostCard: React.FunctionComponent<IPostCardProps> = ({ data }) => {
   const { user } = useUserAuth();
+  let date: Date = new Date();  
+  // Make sure data.userlikes is defined and is an array
+  const userLikes = Array.isArray(data.userLikes) ? data.userLikes : [];
+
   const [likesInfo, setLikesInfo] = useState({
     likes: data.likes,
-    isLike: data.userlikes.includes(user?.uid ?? ''),
+    isLike: userLikes.includes(user?.uid ?? ''),  // Use the valid array here
   });
 
   const updateLike = (isLiked: boolean) => {
@@ -42,7 +46,7 @@ const PostCard: React.FunctionComponent<IPostCardProps> = ({ data }) => {
           />
           <div>
             <p className="text-sm font-medium leading-none">{user ? user.displayName : 'Guest'}</p>
-            <p className="text-sm text-muted-foreground">2 hours ago</p>
+            <p className="text-sm text-muted-foreground">`{$date}`</p>
           </div>
         </div>
       </CardHeader>
