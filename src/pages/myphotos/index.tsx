@@ -1,91 +1,77 @@
-import Layout from "@/components/layout";
-import { useUserAuth } from "@/context/userAuthContext";
-import { getPostByUserId } from "@/repository/post.service";
-import { DocumentResponse, Post } from "@/types";
-import { HeartIcon } from "lucide-react";
-import * as React from "react";
+import { HeartIcon } from 'lucide-react'
+import { useContext, useEffect, useState, type FC } from 'react'
 
-const MyPhotos: React.FunctionComponent = () => {
-  const { user } = useUserAuth();
-  const [data, setData] = React.useState<DocumentResponse[]>([]);
-  const [loading, setLoading] = React.useState(true); // Add loading state
+//Context
+import { userAuthContext } from '@/context/UserAuthContext'
 
-  const getAllPost = async (id: string) => {
-    setLoading(true); // Set loading to true on data fetch
-    try {
-      const querySnapshot = await getPostByUserId(id);
-      const tempArr: DocumentResponse[] = [];
-      if (querySnapshot.size > 0) {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as Post;
-          const responseObj: DocumentResponse = {
-            id: doc.id,
-            ...data,
-          };
-          tempArr.push(responseObj);
-        });
-        setData(tempArr);
-      } else {
-        console.log("No documents found");
-      }
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false); // Stop loading after fetching data
+//Services
+import { getPostByUserId } from '@/repository/post.service'
+
+//Types
+import type { DocumentResponse } from '@/types'
+
+//Components
+import Layout from '@/components/layout'
+
+const MyPhotos: FC = () => {
+  const { user } = useContext(userAuthContext)
+  const [userData, setUserData] = useState<DocumentResponse[]>([])
+
+  const fetchData = async (id: string) => {
+    const res = await getPostByUserId(id)
+    if (res) setUserData(res)
+  }
+
+  useEffect(() => {
+    if (user != null) {
+      fetchData(user.uid)
     }
-  };
-
-  React.useEffect(() => {
-    if (user) {
-      getAllPost(user.uid);
-    }
-  }, [user]);
+  }, [])
 
   const renderPost = () => {
-    return data.map((item) => (
-      <div key={item.photos[0].uuid} className="relative">
-        <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
-          <div className="flex flex-col justify-center items-center w-full h-full">
-            <HeartIcon className="hidden group-hover:block fill-white" />
-            <div className="hidden group-hover:block text-white">
-              {item.likes} likes
+    return userData.map((item, index) => {
+      return (
+        <div key={index} className='relative'>
+          <div className='group absolute bottom-0 left-0 right-0 top-0 h-full w-full bg-transparent transition-all duration-200 hover:bg-slate-950 hover:bg-opacity-75'>
+            <div className='flex h-full w-full flex-col items-center justify-center'>
+              <HeartIcon className='hidden fill-white group-hover:block' />
+              <div className='hidden text-white group-hover:block'>
+                {item.likes} likes
+              </div>
             </div>
           </div>
+          <div className='flex flex-col gap-y-2'>
+            {item.photos?.map((photo, index) => (
+              <img
+                key={index}
+                src={
+                  photo.cdnUrl +
+                    '/-/progressive/yes/-/scale_crop/300x300/center/' || ''
+                }
+              />
+            ))}
+          </div>
+          <p>{item.caption}</p>
         </div>
-        <img
-          src={`${item.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-          onError={(e) => {
-            e.currentTarget.src = "/path/to/fallback-image.jpg"; // Optional fallback image
-            console.error("Image failed to load:", item.photos[0].cdnUrl);
-          }}
-          alt="User uploaded content"
-        />
-      </div>
-    ));
-  };
+      )
+    })
+  }
 
   return (
     <Layout>
-      <div className="flex justify-center">
-        <div className="border max-w-3xl w-full">
-          <h3 className="bg-slate-800 text-white text-center text-lg p-2">
+      <div className='flex justify-center'>
+        <div className='w-full max-w-3xl border'>
+          <h3 className='bg-slate-800 p-2 text-center text-lg text-white'>
             My Photos
           </h3>
-          <div className="p-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {loading ? (
-                <div>Loading...</div> // Show loading text while fetching data
-              ) : data.length > 0 ? (
-                renderPost()
-              ) : (
-                <div>No posts available.</div> // Show this if no posts are found
-              )}
+          <div className='p-8'>
+            <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
+              {userData ? renderPost() : <div>...Loading</div>}
             </div>
           </div>
         </div>
       </div>
     </Layout>
-  );
-};
-
-export default MyPhotos;
+  )
+}
+export default MyPhotos

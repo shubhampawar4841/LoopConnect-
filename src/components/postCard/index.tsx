@@ -1,91 +1,94 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, CardFooter } from '../ui/card';
-import { useUserAuth } from '@/context/userAuthContext';
-import { HeartIcon, ChatAlt2Icon, ShareIcon } from '@heroicons/react/solid';
-import cn from 'classnames';
-import { DocumentResponse } from '@/types';
-import image2 from '@/assets/images/image2.jpg';
+import { HeartIcon, MessageCircle } from 'lucide-react'
+import { useContext, useState, type FC } from 'react'
 
-interface IPostCardProps {
-  data: DocumentResponse;
+//Utils
+import { cn } from '@/lib/utils'
+
+//Types
+import type { DocumentResponse, LikesInfo } from '@/types'
+
+//Assets
+
+//Services
+import { updateLikesOnPost } from '@/repository/post.service'
+
+//Context
+import { userAuthContext } from '@/context/UserAuthContext'
+
+//Components
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+
+interface IPostcard {
+  data: DocumentResponse
 }
 
-const FALLBACK_IMAGE = '/path/to/fallback-image.jpg';
-const FALLBACK_AVATAR = '/path/to/fallback-avatar.jpg';
-
-const PostCard: React.FunctionComponent<IPostCardProps> = ({ data }) => {
-  const { user } = useUserAuth();
-  
-  // Make sure data.userlikes is defined and is an array
-  const userLikes = Array.isArray(data.userLikes) ? data.userLikes : [];
-
-  const [likesInfo, setLikesInfo] = useState({
+const Postcard: FC<IPostcard> = ({ data }) => {
+  const { user } = useContext(userAuthContext)
+  const [likesInfo, setLikesInfo] = useState<LikesInfo>({
     likes: data.likes,
-    isLike: userLikes.includes(user?.uid ?? ''),  // Use the valid array here
-  });
+    isLike: data.userLikes?.includes(user!.uid) ? true : false
+  })
 
-  const updateLike = (isLiked: boolean) => {
-    setLikesInfo((prevState) => ({
-      likes: isLiked ? prevState.likes + 1 : prevState.likes - 1,
-      isLike: isLiked,
-    }));
-  };
+  const updateLike = async (isVal: boolean) => {
+    setLikesInfo({
+      likes: isVal ? likesInfo.likes! + 1 : likesInfo.likes! - 1,
+      isLike: !likesInfo.isLike
+    })
+    if (isVal) {
+      data.userLikes?.push(user!.uid)
+    } else {
+      data.userLikes?.splice(data.userLikes.indexOf(user!.uid), 1)
+    }
+
+    await updateLikesOnPost(
+      data.id!,
+      data.userLikes!,
+      isVal ? likesInfo.likes! + 1 : likesInfo.likes! - 1
+    )
+  }
 
   return (
-    <Card className="w-full max-w-md mx-auto mb-6 shadow-lg rounded-lg hover:shadow-2xl transition-shadow duration-300">
-      {/* Header */}
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center space-x-2">
-          <img
-            src={image2}
-            onError={(e) => {
-              e.currentTarget.src = FALLBACK_AVATAR;
-            }}
-            className="w-10 h-10 rounded-full border-2"
-            alt="User avatar"
-          />
-          <div>
-            <p className="text-sm font-medium leading-none">{user ? user.displayName : 'Guest'}</p>
-            <p className="text-sm text-muted-foreground">2 hours </p>
-          </div>
-        </div>
+    <Card className='mb-6'>
+      <CardHeader className='flex flex-col p-3'>
+        <CardTitle className='flex items-center justify-start text-center text-sm'>
+          <span className='mr-2'>
+            <img
+              src={data.photoURL}
+              className='h-10 w-10 rounded-full border-2 border-slate-800 object-cover'
+            />
+          </span>
+          <span>{data.userName}</span>
+        </CardTitle>
       </CardHeader>
-
-      {/* Content */}
-      <CardContent>
-        <p className="text-sm">{data.content}</p>
-        {data.photos?.[0]?.cdnUrl && (
-          <img
-            src={data.photos[0]?.cdnUrl || FALLBACK_IMAGE}
-            onError={(e) => {
-              e.currentTarget.src = FALLBACK_IMAGE;
-            }}
-            alt="Post image"
-            className="mt-3 rounded-lg object-cover w-full h-64"
-          />
-        )}
+      <CardContent className='flex flex-col gap-y-2 p-0'>
+        {data.photos?.map((photo, index) => (
+          <img key={index} src={photo.cdnUrl || ''} />
+        ))}
       </CardContent>
-
-      {/* Footer */}
-      <CardFooter className="flex justify-between">
-        <button
-          className={`flex items-center space-x-1 ${likesInfo.isLike ? 'text-red-500' : ''}`}
-          onClick={() => updateLike(!likesInfo.isLike)}
-        >
-          <HeartIcon className={`w-6 h-6 ${likesInfo.isLike ? 'fill-current' : ''}`} />
-          <span>{likesInfo.likes}</span>
-        </button>
-        <button className="flex items-center space-x-1">
-          <ChatAlt2Icon className="w-6 h-6" />
-          <span>Comment</span>
-        </button>
-        <button className="flex items-center space-x-1">
-          <ShareIcon className="w-6 h-6" />
-          <span>Share</span>
-        </button>
+      <CardFooter className='flex flex-col p-3'>
+        <div className='mb-3 flex w-full justify-between'>
+          <HeartIcon
+            className={cn(
+              'mr-3',
+              'cursor-pointer',
+              likesInfo.isLike ? 'fill-red-500' : 'fill-none'
+            )}
+            onClick={() => updateLike(!likesInfo.isLike)}
+          />
+          <MessageCircle className='mr-3' />
+        </div>
+        <div className='w-full text-sm'>{likesInfo.likes} likes</div>
+        <div className='w-full text-sm'>
+          <span>{data.userName}</span>: {data.caption}
+        </div>
       </CardFooter>
     </Card>
-  );
-};
-
-export default PostCard;
+  )
+}
+export default Postcard

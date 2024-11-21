@@ -1,24 +1,21 @@
-import * as React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { getAuth } from "firebase/auth";
+import { type FC } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-interface IProtectedRoutesProps {}
+//Components
+import { Icons } from '@/components/ui/icons'
 
-const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = () => {
-  const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
-  const location = useLocation();
+//Utils
+import { auth } from '@/utils/firebase'
+
+const ProtectedRoutes: FC = () => {
+  const [user, loading] = useAuthState(auth)
+  const location = useLocation()
 
   if (loading) {
-    return <div>...Loading</div>;
+    return <Icons.spinner />
   }
 
-  return user ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} />
-  );
-};
-
-export default ProtectedRoutes;
+  return user ? <Outlet /> : <Navigate to='/login' state={{ from: location }} />
+}
+export default ProtectedRoutes
