@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, type FC } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 //Context
-import { userAuthContext } from '@/context/UserAuthProvider'
+import { userAuthContext } from '@/context/UserAuthContext'
 
 //Services
 import { updateUserInfoOnPosts } from '@/repository/post.service'
@@ -20,7 +20,7 @@ import type { ProfileInfo, UserProfile } from '@/types'
 import type { OutputFileEntry } from '@uploadcare/react-uploader'
 
 //Components
-import FileUploader from '@/components/fileUploder'
+import FileUploader from '@/components/fileUploader'
 import Layout from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

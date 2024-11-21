@@ -1,49 +1,63 @@
-import { createBrowserRouter } from "react-router-dom";
-import Login from "./pages/login";
-import Error from "./pages/error";
-import Signup from "./pages/signup";
-import Home from "./pages/home";
-import CreatePost from "./pages/post";
-import Profile from "./pages/profile";
-import MyPhotos from "./pages/myphotos";
-import ProtectedRoutes from "./components/protectedRoutes";
+import { createBrowserRouter } from 'react-router-dom'
+
+//Components
+import ProtectedRoutes from './components/protectedRoutes'
+
+//Pages
+import Error from '@/pages/error'
+import Home from '@/pages/home'
+import Login from '@/pages/login'
+import MyPhotos from '@/pages/myphotos'
+import NotFound from '@/pages/notfound'
+import Post from '@/pages/post'
+import Profile from '@/pages/profile'
+import EditProfile from '@/pages/profile/EditProfile'
+import SignUp from '@/pages/signup'
 
 export const router = createBrowserRouter([
   {
     element: <ProtectedRoutes />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Home />,
-        errorElement: <Error />,
+        errorElement: <Error />
       },
       {
-        path: "/post",
-        element: <CreatePost />,
-        errorElement: <Error />,
+        path: '/post',
+        element: <Post />,
+        errorElement: <Error />
       },
       {
-        path: "/profile",
+        path: '/profile',
         element: <Profile />,
-        errorElement: <Error />,
+        errorElement: <Error />
       },
       {
-        path: "/myphotos",
-        element: <MyPhotos />,
-        errorElement: <Error />,
+        path: '/edit-profile',
+        element: <EditProfile />,
+        errorElement: <Error />
       },
-    ],
+      {
+        path: '/myphotos',
+        element: <MyPhotos />,
+        errorElement: <Error />
+      }
+    ]
   },
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
-    errorElement: <Error />,
+    errorElement: <Error />
   },
   {
-    path: "/signup",
-    element: <Signup />,
-    errorElement: <Error />,
+    path: '/signup',
+    element: <SignUp />,
+    errorElement: <Error />
   },
-]);
-
-export default router;
+  {
+    path: '*',
+    element: <NotFound />,
+    errorElement: <Error />
+  }
+])

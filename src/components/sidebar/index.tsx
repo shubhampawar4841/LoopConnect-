@@ -25,7 +25,7 @@ const Sidebar: FC<ISidebar> = ({ items }) => {
     <nav className='relative flex h-screen w-full max-w-10 flex-col overflow-hidden sm:max-w-sm'>
       <Link to='/' className='flex justify-center p-5'>
         <div className='hidden text-lg text-white sm:inline-flex'>
-          PhotoGram
+          LoopConnect
         </div>
       </Link>
       {items.map((item, i) => (

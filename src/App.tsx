@@ -1,16 +1,17 @@
-import * as React from "react";
-import { RouterProvider } from "react-router-dom";
-import router from "./routes";
-import { UserAuthProvider } from "./context/UserAuthProvider";
+import { type FC } from 'react'
+import { RouterProvider } from 'react-router-dom'
 
-interface IAppProps {}
+//Context
+import { UserAuthProvider } from './context/UserAuthProvider'
 
-const App: React.FunctionComponent<IAppProps> = () => {
+//Routes
+import { router } from '@/routes'
+
+const App: FC = () => {
   return (
     <UserAuthProvider>
       <RouterProvider router={router} />
     </UserAuthProvider>
-  );
-};
-
-export default App;
+  )
+}
+export default App
