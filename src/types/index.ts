@@ -1,3 +1,6 @@
+import { OutputFileEntry } from '@uploadcare/blocks'
+import { User } from 'firebase/auth'
+
 export interface UserSignIn {
     email: string;
     password: string;
