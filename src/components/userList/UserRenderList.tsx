@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 
 //Types
-import { UserProfileResponse } from '@/types'
+import { UserProfileResponse } from '@/types/index'
 
 //Assets
 import avatar from '@/assets/images/avatar.png'

@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 
 //Types
-import type { DocumentResponse, Post, ProfileInfo } from '@/types'
+import type { DocumentResponse, Post, ProfileInfo } from '@/types/index'
 
 //Utils
 import { db } from '@/utils/firebase'

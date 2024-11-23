@@ -13,7 +13,7 @@ import {
   import { auth } from '@/utils/firebase'
   
   //Types
-  import { ProfileInfo } from '@/types'
+  import { ProfileInfo } from '@/types/index'
   
   export const firebaseAuthRequests = {
     logIn: (email: string, password: string): Promise<UserCredential> => {

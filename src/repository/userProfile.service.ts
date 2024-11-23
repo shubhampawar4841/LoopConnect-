@@ -12,7 +12,7 @@ import {
   import { db } from '@/utils/firebase'
   
   //Types
-  import type { UserProfile, UserProfileResponse } from '@/types'
+  import type { UserProfile, UserProfileResponse } from '@/types/index'
   
   const COLLECTION_NAME = 'users'
   

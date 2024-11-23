@@ -10,7 +10,7 @@ import { getAllUsers } from '@/repository/userProfile.service'
 import avatar from '@/assets/images/avatar.png'
 
 //Types
-import { UserProfileResponse } from '@/types'
+import { UserProfileResponse } from '@/types/index'
 import { Link } from 'react-router-dom'
 import UserRenderList from './UserRenderList'
 

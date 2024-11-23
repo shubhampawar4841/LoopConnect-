@@ -9,7 +9,7 @@ import {
   } from 'lucide-react'
   
   //Types
-  import { NavItem } from '@/types'
+  import { NavItem } from '@/types/index'
   
   export const navItems: NavItem[] = [
     {
