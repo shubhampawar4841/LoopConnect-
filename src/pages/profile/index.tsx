@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { userAuthContext } from '@/context/UserAuthContext';
 
 // Types
-import type { DocumentResponse, UserProfileResponse } from '@/types';
+import type { DocumentResponse, UserProfileResponse } from '@/types/index';
 
 // Assets
 import avatar from '@/assets/images/avatar.png';

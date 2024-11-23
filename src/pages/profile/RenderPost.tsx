@@ -2,7 +2,7 @@ import { HeartIcon } from 'lucide-react'
 import { FC } from 'react'
 
 //Types
-import { DocumentResponse } from '@/types'
+import { DocumentResponse } from '@/types/index'
 
 interface IRenderPosts {
   data: DocumentResponse[]

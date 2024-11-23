@@ -8,7 +8,7 @@ import { userAuthContext } from '@/context/UserAuthContext'
 import { getPostByUserId } from '@/repository/post.service'
 
 //Types
-import type { DocumentResponse } from '@/types'
+import type { DocumentResponse } from '@/types/index'
 
 //Components
 import Layout from '@/components/layout'

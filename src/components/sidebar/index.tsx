@@ -12,7 +12,7 @@ import { firebaseAuthRequests } from '@/repository/signIn.service'
 import { buttonVariants } from '../ui/button'
 
 //Types
-import { NavItem } from '@/types'
+import { NavItem } from '@/types/index'
 
 interface ISidebar {
   items: NavItem[]

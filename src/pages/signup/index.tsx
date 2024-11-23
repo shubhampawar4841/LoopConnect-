@@ -11,7 +11,7 @@ import image3 from '@/assets/images/image3.jpg'
 import image4 from '@/assets/images/image4.jpg'
 
 //Types
-import { UserSignIn } from '@/types'
+import { UserSignIn } from '@/types/index'
 
 //Components
 import { Button } from '@/components/ui/button'

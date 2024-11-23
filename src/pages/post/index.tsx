@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { userAuthContext } from '@/context/UserAuthContext'
 
 //Types
-import type { PhotoMeta, Post } from '@/types'
+import type { PhotoMeta, Post } from '@/types/index'
 import type { OutputFileEntry } from '@uploadcare/react-uploader'
 
 //Services

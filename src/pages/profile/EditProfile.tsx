@@ -16,7 +16,7 @@ import {
 import avatar from '@/assets/images/avatar.png'
 
 //Types
-import type { ProfileInfo, UserProfile } from '@/types'
+import type { ProfileInfo, UserProfile } from '@/types/index'
 import type { OutputFileEntry } from '@uploadcare/react-uploader'
 
 //Components
