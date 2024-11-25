@@ -80,15 +80,20 @@ const Postcard: FC<IPostcard> = ({ data }) => {
   }
 
   return (
-    <Card className="mb-6 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl">
-      <CardHeader className="flex flex-col p-4 bg-gradient-to-r from-black to-blue-600">
-        <CardTitle className="flex items-center text-sm text-white">
+    <Card className="mb-6 overflow-hidden shadow-lg transition-all duration-300 bg-black text-white hover:shadow-xl">
+      <CardHeader className="flex flex-col p-4 border-b border-gray-700">
+        <CardTitle className="flex items-center text-sm">
           <img
             src={data.photoURL || '/default-profile.png'}
-            className="mr-3 h-12 w-12 rounded-full border-2 border-white object-cover shadow-md"
+            className="mr-3 h-12 w-12 rounded-full border-2 border-gray-500 object-cover shadow-md"
             alt="User profile"
           />
-          <span className="font-semibold">{data.userName}</span>
+          <div>
+            <span className="font-semibold">{data.userName}</span>
+            {data.location && (
+              <div className="text-xs text-gray-400">{data.location}</div>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-y-2 p-0">
@@ -102,24 +107,24 @@ const Postcard: FC<IPostcard> = ({ data }) => {
           />
         ))}
       </CardContent>
-      <CardFooter className="flex flex-col p-4 bg-gray-50">
+      <CardFooter className="flex flex-col p-4 bg-gray-900">
         <div className="mb-3 flex w-full justify-between">
           <div className="flex space-x-4">
             <HeartIcon
               className={cn(
                 'h-6 w-6 transition-all duration-300',
                 'cursor-pointer',
-                likesInfo.isLike ? 'fill-red-500 text-red-500 scale-110' : 'fill-none text-gray-600 hover:text-red-500'
+                likesInfo.isLike ? 'fill-red-500 text-red-500 scale-110' : 'fill-none text-gray-400 hover:text-red-500'
               )}
               onClick={() => updateLike(!likesInfo.isLike)}
             />
             <MessageCircle 
-              className="h-6 w-6 cursor-pointer text-gray-600 transition-all duration-300 hover:text-blue-500"
+              className="h-6 w-6 cursor-pointer text-gray-400 transition-all duration-300 hover:text-blue-500"
               onClick={() => setShowComments(!showComments)}
             />
           </div>
           <Share2 
-            className="h-6 w-6 cursor-pointer text-gray-600 transition-all duration-300 hover:text-green-500"
+            className="h-6 w-6 cursor-pointer text-gray-400 transition-all duration-300 hover:text-green-500"
             onClick={handleShare}
           />
         </div>
@@ -144,7 +149,7 @@ const Postcard: FC<IPostcard> = ({ data }) => {
         <div className="mt-4 flex items-center">
           <input
             type="text"
-            className="flex-1 rounded-l-md border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="flex-1 rounded-l-md border border-gray-700 bg-gray-800 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -162,4 +167,3 @@ const Postcard: FC<IPostcard> = ({ data }) => {
 }
 
 export default Postcard
-
