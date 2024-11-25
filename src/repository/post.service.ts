@@ -112,3 +112,19 @@ export const updateUserInfoOnPosts = async (profileInfo: ProfileInfo) => {
     console.log('The user doesn;t have anu post')
   }
 }
+export const addCommentToPost = async (
+  postId: string,
+  comment: Comment
+) => {
+  const docRef = doc(db, COLLECTION_NAME, postId);
+  const postSnapshot = await getDoc(docRef);
+
+  if (postSnapshot.exists()) {
+    const postData = postSnapshot.data() as Post;
+    const updatedComments = [...(postData.comments || []), comment];
+    
+    return updateDoc(docRef, { comments: updatedComments });
+  } else {
+    console.error('Post not found');
+  }
+};

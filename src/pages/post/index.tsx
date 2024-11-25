@@ -31,8 +31,10 @@ const Post: FC = () => {
     userId: '',
     userName: '',
     photoURL: '',
-    date: new Date()
-  })
+    date: new Date(),
+    comments: [] // Add this
+  });
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPost({ ...post, caption: e.target.value })

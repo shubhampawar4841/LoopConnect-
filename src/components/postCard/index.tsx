@@ -1,21 +1,8 @@
 import { HeartIcon, MessageCircle } from 'lucide-react'
 import { useContext, useState, type FC } from 'react'
-
-//Utils
 import { cn } from '@/lib/utils'
-
-//Types
-import type { DocumentResponse, LikesInfo } from '@/types/index'
-
-//Assets
-
-//Services
 import { updateLikesOnPost } from '@/repository/post.service'
-
-//Context
 import { userAuthContext } from '@/context/UserAuthContext'
-
-//Components
 import {
   Card,
   CardContent,
@@ -34,41 +21,51 @@ const Postcard: FC<IPostcard> = ({ data }) => {
     likes: data.likes,
     isLike: data.userLikes?.includes(user!.uid) ? true : false
   })
+  const [isLoading, setIsLoading] = useState(false)
 
   const updateLike = async (isVal: boolean) => {
+    if (isLoading) return // Prevent multiple clicks
+    setIsLoading(true)
+
     setLikesInfo({
       likes: isVal ? likesInfo.likes! + 1 : likesInfo.likes! - 1,
       isLike: !likesInfo.isLike
     })
-    if (isVal) {
-      data.userLikes?.push(user!.uid)
-    } else {
-      data.userLikes?.splice(data.userLikes.indexOf(user!.uid), 1)
-    }
 
-    await updateLikesOnPost(
-      data.id!,
-      data.userLikes!,
-      isVal ? likesInfo.likes! + 1 : likesInfo.likes! - 1
-    )
+    try {
+      if (isVal) {
+        data.userLikes?.push(user!.uid)
+      } else {
+        data.userLikes?.splice(data.userLikes.indexOf(user!.uid), 1)
+      }
+      await updateLikesOnPost(
+        data.id!,
+        data.userLikes!,
+        isVal ? likesInfo.likes! + 1 : likesInfo.likes! - 1
+      )
+    } catch (error) {
+      console.error('Error updating likes:', error)
+      // Optionally revert UI changes
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <Card className='mb-6'>
       <CardHeader className='flex flex-col p-3'>
-        <CardTitle className='flex items-center justify-start text-center text-sm'>
-          <span className='mr-2'>
-            <img
-              src={data.photoURL}
-              className='h-10 w-10 rounded-full border-2 border-slate-800 object-cover'
-            />
-          </span>
+        <CardTitle className='flex items-center text-sm'>
+          <img
+            src={data.photoURL || '/default-profile.png'}
+            className='mr-2 h-10 w-10 rounded-full border-2 border-slate-800 object-cover'
+            alt='User profile'
+          />
           <span>{data.userName}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className='flex flex-col gap-y-2 p-0'>
         {data.photos?.map((photo, index) => (
-          <img key={index} src={photo.cdnUrl || ''} />
+          <img key={index} src={photo.cdnUrl || ''} alt='Post' loading='lazy' />
         ))}
       </CardContent>
       <CardFooter className='flex flex-col p-3'>
@@ -81,7 +78,7 @@ const Postcard: FC<IPostcard> = ({ data }) => {
             )}
             onClick={() => updateLike(!likesInfo.isLike)}
           />
-          <MessageCircle className='mr-3' />
+          <MessageCircle className='cursor-pointer' />
         </div>
         <div className='w-full text-sm'>{likesInfo.likes} likes</div>
         <div className='w-full text-sm'>
@@ -91,4 +88,5 @@ const Postcard: FC<IPostcard> = ({ data }) => {
     </Card>
   )
 }
+
 export default Postcard

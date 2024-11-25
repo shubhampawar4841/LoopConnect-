@@ -22,6 +22,13 @@ export interface UserSignIn {
     files: OutputFileEntry[];
   }
   
+  export interface Comment {
+    userId: string;
+    userName: string;
+    text: string;
+    date: Date;
+  }
+  
   export interface Post {
     caption: string;
     photos: PhotoMeta[];
@@ -31,7 +38,9 @@ export interface UserSignIn {
     userName?: string;
     photoURL?: string;
     date: Date;
+    comments: Comment[]; // Add this
   }
+  
   
   export interface PhotoMeta {
     cdnUrl: string | null;
