@@ -1,50 +1,50 @@
 import {
-    Bell,
-    Camera,
-    CircleUserRound,
-    House,
-    SendHorizontal,
-    Settings,
-    SquarePlus
-  } from 'lucide-react'
-  
-  //Types
-  import { NavItem } from '@/types/index'
-  
-  export const navItems: NavItem[] = [
-    {
-      name: 'Home',
-      link: '/',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <House {...props} />
-    },
-    {
-      name: 'Add Photos',
-      link: '/post',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <SquarePlus {...props} />
-    },
-    {
-      name: 'My Photos',
-      link: '/myphotos',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <Camera {...props} />
-    },
-    {
-      name: 'Profile',
-      link: '/profile',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <CircleUserRound {...props} />
-    },
-    {
-      name: 'Notifications',
-      link: '#',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <Bell {...props} />
-    },
-    {
-      name: 'Direct',
-      link: '#',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <SendHorizontal {...props} />
-    },
-    {
-      name: 'Settings',
-      link: '#',
-      icon: (props?: React.SVGProps<SVGSVGElement>) => <Settings {...props} />
-    }
-  ]
+  Bell,
+  Camera,
+  CircleUserRound,
+  House,
+  SendHorizontal,
+  Settings,
+  SquarePlus
+} from 'lucide-react'
+
+//Types
+import { NavItem } from '@/types'
+
+export const navItems: NavItem[] = [
+  {
+    name: 'Home',
+    link: '/',
+    icon: (props) => <House {...props} />
+  },
+  {
+    name: 'Add Photos',
+    link: '/post',
+    icon: (props) => <SquarePlus {...props} />
+  },
+  {
+    name: 'My Photos',
+    link: '/myphotos',
+    icon: (props) => <Camera {...props} />
+  },
+  {
+    name: 'Profile',
+    link: '/profile',
+    icon: (props) => <CircleUserRound {...props} />
+  },
+  {
+    name: 'Notifications',
+    link: '#',
+    icon: (props) => <Bell {...props} />
+  },
+  {
+    name: 'Direct',
+    link: '#',
+    icon: (props) => <SendHorizontal {...props} />
+  },
+  {
+    name: 'Settings',
+    link: '#',
+    icon: (props) => <Settings {...props} />
+  }
+]
