@@ -9,10 +9,8 @@ import { getAllUsers } from '@/repository/userProfile.service'
 //Assets
 import avatar from '@/assets/images/avatar.png'
 
-//Types
-import { UserProfileResponse } from '@/types/index'
-import { Link } from 'react-router-dom'
-import UserRenderList from './UserRenderList'
+//Type
+
 
 const UserList: FC = () => {
   const { user } = useContext(userAuthContext)
