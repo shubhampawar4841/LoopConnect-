@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 
 //Types
-import type { DocumentResponse, Post, ProfileInfo } from '@/types/index'
+import type { DocumentResponse, Post, ProfileInfo } from '@/types'
 
 //Utils
 import { db } from '@/utils/firebase'
@@ -93,6 +93,17 @@ export const updateLikesOnPost = (
     userLikes: userLikes
   })
 }
+// post.service.ts
+export const addCommentToPost = async (postId: string, comment: string) => {
+  const docRef = doc(db, COLLECTION_NAME, postId);
+  const postDoc = await getDoc(docRef);
+  if (postDoc.exists()) {
+    const updatedComments = [...(postDoc.data().comments || []), comment];
+    return updateDoc(docRef, { comments: updatedComments });
+  }
+  throw new Error('Post not found');
+};
+
 
 export const updateUserInfoOnPosts = async (profileInfo: ProfileInfo) => {
   const q = query(
@@ -112,19 +123,3 @@ export const updateUserInfoOnPosts = async (profileInfo: ProfileInfo) => {
     console.log('The user doesn;t have anu post')
   }
 }
-export const addCommentToPost = async (
-  postId: string,
-  comment: Comment
-) => {
-  const docRef = doc(db, COLLECTION_NAME, postId);
-  const postSnapshot = await getDoc(docRef);
-
-  if (postSnapshot.exists()) {
-    const postData = postSnapshot.data() as Post;
-    const updatedComments = [...(postData.comments || []), comment];
-    
-    return updateDoc(docRef, { comments: updatedComments });
-  } else {
-    console.error('Post not found');
-  }
-};
