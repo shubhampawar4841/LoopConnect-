@@ -1,28 +1,23 @@
-import type { FC } from 'react'
+import * as React from "react";
+import Sidebar from "../sidebar";
+import UserList from "../userList";
 
-//Constants
-
-//Components
-import Sidebar from '@/components/sidebar'
-import UserList from '@/components/userList'
-
-interface ILayout {
-  children: React.ReactNode
+interface ILayoutProps {
+  children: React.ReactNode;
 }
 
-const Layout: FC<ILayout> = ({ children }) => {
+const Layout: React.FunctionComponent<ILayoutProps> = ({ children }) => {
   return (
-    <div className='flex bg-white'>
-      <div className='fixed left-0 top-0 z-40 flex h-screen gap-x-4 bg-gray-800 lg:w-60'>
-        <Sidebar/>
-      </div>
-      <div className='mx-[40px] flex-1 p-[5px] sm:ml-36 sm:mr-60 sm:p-2 lg:mx-60 lg:p-8'>
-        {children}
-      </div>
-      <div className='fixed right-0 top-0 z-40 flex h-screen bg-gray-800 lg:w-60'>
+    <div className="flex bg-white">
+      <aside className="flex gap-x-4 bg-gray-800 fixed top-0 left-0 z-40 lg:w-60 h-screen">
+        <Sidebar />
+      </aside>
+      <div className="lg:ml-60 lg:mr-60 p-8 flex-1 ml-36">{children}</div>
+      <aside className="hidden lg:block bg-gray-800 fixed top-0 right-0 z-40 lg:w-60 h-screen">
         <UserList />
-      </div>
+      </aside>
     </div>
-  )
-}
-export default Layout
+  );
+};
+
+export default Layout;

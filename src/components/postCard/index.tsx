@@ -5,7 +5,7 @@ import { useContext, useState, type FC } from 'react'
 import { cn } from '@/lib/utils'
 
 //Types
-import type { DocumentResponse, LikesInfo } from '@/types/index'
+import type { DocumentResponse, LikesInfo } from '@/types'
 
 //Assets
 

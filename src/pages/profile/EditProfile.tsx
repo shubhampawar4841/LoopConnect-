@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useState, type FC } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -16,7 +17,7 @@ import {
 import avatar from '@/assets/images/avatar.png'
 
 //Types
-import type { ProfileInfo, UserProfile } from '@/types/index'
+import type { ProfileInfo, UserProfile } from '@/types'
 import type { OutputFileEntry } from '@uploadcare/react-uploader'
 
 //Components
