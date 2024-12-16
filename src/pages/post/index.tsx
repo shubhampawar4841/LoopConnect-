@@ -2,7 +2,7 @@ import { useContext, useState, type FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 //Context
-import { userAuthContext } from '@/context/UserAuthContext'
+import { userAuthContext } from '@/context/userAuthContext'
 
 //Types
 import type { PhotoMeta, Post } from '@/types/index'

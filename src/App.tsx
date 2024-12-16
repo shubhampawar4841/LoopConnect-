@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
 // Context
-import { UserAuthProvider } from './context/UserAuthProvider';
+import { UserAuthProvider } from './context/userAuthContext';
 
 // Routes
 import { router } from '@/routes';

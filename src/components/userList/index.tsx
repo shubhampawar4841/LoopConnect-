@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, type FC } from 'react'
 
 //Context
-import { userAuthContext } from '@/context/UserAuthContext'
+import { userAuthContext } from '@/context/userAuthContext'
 
 //Services
 import { getAllUsers } from '@/repository/userProfile.service'

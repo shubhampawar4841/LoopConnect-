@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, type FC } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 //Context
-import { userAuthContext } from '@/context/UserAuthContext'
+import { userAuthContext } from '@/context/userAuthContext'
 
 //Services
 import { updateUserInfoOnPosts } from '@/repository/post.service'
