@@ -82,5 +82,3 @@ Contributions are welcome! Follow these steps to contribute:
 If you find this project helpful, please give it a **star** ⭐ to show your support!  
 
 ---
-
-Feel free to customize the repository details (`your-username/your-repo`) as needed. Let me know if you'd like additional sections or edits! 😊
