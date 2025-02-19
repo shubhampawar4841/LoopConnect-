@@ -1,21 +1,13 @@
-import { OutputFileEntry } from '@uploadcare/blocks';
-import { User } from 'firebase/auth';
-
-export interface UserSignIn {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { OutputFileEntry } from "@uploadcare/blocks";
 
 export interface UserLogIn {
   email: string;
   password: string;
 }
-
-export interface NavItem {
-  name: string;
-  link: string;
-  icon: (props?: React.SVGProps<SVGSVGElement>) => JSX.Element;
+export interface UserSignIn {
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface FileEntry {
@@ -26,16 +18,14 @@ export interface Post {
   caption: string;
   photos: PhotoMeta[];
   likes: number;
-  userLikes: string[];
-  userId?: string;
-  userName?: string;
-  photoURL?: string;
+  userlikes: [];
+  userId: string | null;
   date: Date;
 }
 
 export interface PhotoMeta {
-  cdnUrl: string | null;
-  uuid: string | null;
+  cdnUrl: string;
+  uuid: string;
 }
 
 export interface DocumentResponse {
@@ -43,34 +33,7 @@ export interface DocumentResponse {
   caption: string;
   photos: PhotoMeta[];
   likes: number;
-  userLikes: string[];
-  comment?: Comment[]; // Optional property
+  userlikes: [];
   userId: string | null;
   date: Date;
-}
-
-export interface LikesInfo {
-  likes?: number;
-  isLike?: boolean;
-}
-
-export interface ProfileInfo {
-  user?: User;
-  displayName?: string;
-  photoURL?: string;
-}
-
-export interface UserProfile {
-  userId?: string;
-  displayName?: string;
-  photoURL?: string;
-  userBio?: string;
-}
-
-export interface UserProfileResponse {
-  id?: string;
-  userId?: string;
-  displayName?: string;
-  photoURL?: string;
-  userBio?: string;
 }

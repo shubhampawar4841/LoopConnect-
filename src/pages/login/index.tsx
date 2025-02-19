@@ -1,162 +1,146 @@
-import { useState, type FC } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 
-//Utils
-import { firebaseAuthRequests } from '@/repository/signIn.service'
-
-//Assets
-import image1 from '@/assets/images/image1.jpg'
-import image2 from '@/assets/images/image2.jpg'
-import image3 from '@/assets/images/image3.jpg'
-import image4 from '@/assets/images/image4.jpg'
-
-//Types
-import { UserLogIn } from '@/types/index'
-
-//Components
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import { Icons } from '@/components/ui/icons'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+  CardTitle,
+} from "@/components/ui/card";
+import { Icons } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
+import { useUserAuth } from "@/context/userAuthContext";
+import { UserLogIn } from "@/types";
+import image1 from "@/assets/images/image1.jpg";
+import image2 from "@/assets/images/image2.jpg";
+import image3 from "@/assets/images/image3.jpg";
+import image4 from "@/assets/images/image4.jpg";
+import { Label } from "@radix-ui/react-label";
+import * as React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
+interface ILoginProps {}
 const initialValue: UserLogIn = {
-  email: '',
-  password: ''
-}
+  email: "",
+  password: "",
+};
 
-const Login: FC = () => {
-  const [userInfo, setUserInfo] = useState<UserLogIn>(initialValue)
+const Login: React.FunctionComponent<ILoginProps> = (props) => {
+  const { googleSignIn, logIn } = useUserAuth();
+  const navigate = useNavigate();
+  const [userLogInInfo, setuserLogInInfo] =
+    React.useState<UserLogIn>(initialValue);
 
-  const navigate = useNavigate()
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleGoogleSignIn = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
     try {
-      firebaseAuthRequests.logIn(userInfo.email, userInfo.password)
-      navigate('/')
+      await googleSignIn();
+      navigate("/");
     } catch (error) {
-      console.log(error)
+      console.log("Error : ", error);
     }
-  }
+  };
 
-  const handleGoogleSignIn = async (e: React.SyntheticEvent<HTMLElement>) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await firebaseAuthRequests.googleSignIn()
-      navigate('/')
+      console.log("The user info is : ", userLogInInfo);
+      await logIn(userLogInInfo.email, userLogInInfo.password);
+      navigate("/");
     } catch (error) {
-      console.log(error)
+      console.log("Error : ", error);
     }
-  }
-
-  const handleGithubSignIn = async (e: React.SyntheticEvent<HTMLElement>) => {
-    e.preventDefault()
-    try {
-      await firebaseAuthRequests.githubSignIn()
-      navigate('/')
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+  };
   return (
-    <div className='h-screen w-full bg-slate-800'>
-      <div className='container mx-auto flex h-full p-6'>
-        <div className='flex w-full items-center justify-center'>
-          <div className='hidden w-2/3 p-6 lg:block'>
-            <div className='grid grid-cols-2 gap-2'>
+    <div className="bg-slate-800 w-full h-screen">
+      <div className="container mx-auto p-6 flex h-full">
+        <div className="flex justify-center items-center w-full">
+          <div className="p-6 w-2/3 hidden lg:block">
+            <div className="grid grid-cols-2 gap-2">
               <img
-                className='aspect-auto h-auto w-2/3 place-self-end rounded-3xl'
+                className=" w-2/3 h-auto aspect-video rounded-3xl place-self-end"
                 src={image2}
-                alt='smileman'
               />
               <img
-                className='aspect-auto h-auto w-2/4 rounded-3xl'
+                className=" w-2/4 h-auto aspect-auto rounded-3xl"
                 src={image1}
-                alt='jumpman'
               />
               <img
-                className='aspect-auto h-auto w-2/4 place-self-end rounded-3xl'
+                className=" w-2/4 h-auto aspect-auto rounded-3xl place-self-end"
                 src={image4}
-                alt='musicgirl'
               />
               <img
-                className='aspect-auto h-auto w-2/3 rounded-3xl'
+                className=" w-2/3 h-auto aspect-video rounded-3xl"
                 src={image3}
-                alt='laughkid'
               />
             </div>
           </div>
-
-          <div className='max-w-sm rounded-xl border bg-card text-card-foreground shadow-sm'>
+          <div className="max-w-sm rounded-xl border bg-card text-card-foreground shadow-sm">
             <Card>
               <form onSubmit={handleSubmit}>
-                <CardHeader className='space-y-1'>
-                  <CardTitle className='text-2xl'>Login an account</CardTitle>
+                <CardHeader className="space-y-1">
+                  <CardTitle className="text-2xl text-center mb-4">
+                    PhotoGram
+                  </CardTitle>
                   <CardDescription>
-                    Enter your email and password to SingIn
+                    Enter your email below to create your account
                   </CardDescription>
                 </CardHeader>
-                <CardContent className='grid gap-4'>
-                  <div className='grid grid-cols-2 gap-6'>
-                    <Button variant='outline' onClick={handleGithubSignIn}>
-                      <Icons.gitHub className='mr-2 h-4 w-4' />
-                      Github
-                    </Button>
-                    <Button variant='outline' onClick={handleGoogleSignIn}>
-                      <Icons.google className='mr-2 h-4 w-4' />
+                <CardContent className="grid gap-4">
+                  <div className="grid">
+                    <Button variant="outline" onClick={handleGoogleSignIn}>
+                      <Icons.google className="mr-2 h-4 w-4" />
                       Google
                     </Button>
                   </div>
-                  <div className='relative'>
-                    <div className='absolute inset-0 flex items-center'>
-                      <span className='w-full border-t' />
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
                     </div>
-                    <div className='relative flex justify-center text-xs uppercase'>
-                      <span className='bg-background px-2 text-muted-foreground'>
-                        Or continue with
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or
                       </span>
                     </div>
                   </div>
-                  <div className='grid gap-2'>
-                    <Label htmlFor='email'>Email</Label>
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email address</Label>
                     <Input
-                      id='email'
-                      type='email'
-                      value={userInfo.email}
+                      id="email"
+                      type="email"
+                      placeholder="dipesh@example.com"
+                      value={userLogInInfo.email}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setUserInfo({ ...userInfo, email: e.target.value })
+                        setuserLogInInfo({
+                          ...userLogInInfo,
+                          email: e.target.value,
+                        })
                       }
-                      placeholder='m@example.com'
                     />
                   </div>
-                  <div className='grid gap-2'>
-                    <Label htmlFor='password'>Password</Label>
+                  <div className="grid gap-2">
+                    <Label htmlFor="password">Password</Label>
                     <Input
-                      id='password'
-                      type='password'
-                      placeholder='Password'
-                      value={userInfo.password}
+                      id="password"
+                      type="password"
+                      placeholder="Password"
+                      value={userLogInInfo.password}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setUserInfo({ ...userInfo, password: e.target.value })
+                        setuserLogInInfo({
+                          ...userLogInInfo,
+                          password: e.target.value,
+                        })
                       }
                     />
                   </div>
                 </CardContent>
-                <CardFooter className='flex flex-col'>
-                  <Button className='w-full' type='submit'>
+                <CardFooter className="flex flex-col">
+                  <Button className="w-full" type="submit">
                     Login
                   </Button>
-                  <p className='mt-3 text-center text-sm'>
-                    Have not an account ? <Link to='/signup'>SignUp</Link>
+                  <p className="mt-3 text-sm text-center">
+                    Don't have an account ? <Link to="/signup">Sign up</Link>
                   </p>
                 </CardFooter>
               </form>
@@ -165,6 +149,7 @@ const Login: FC = () => {
         </div>
       </div>
     </div>
-  )
-}
-export default Login
+  );
+};
+
+export default Login;

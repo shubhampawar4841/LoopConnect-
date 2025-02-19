@@ -1,89 +1,72 @@
-import { Search } from 'lucide-react';
-import { useContext, useEffect, useState, type FC } from 'react';
+import Layout from "@/components/layout";
+import Stories from "@/components/stories";
+import { Input } from "@/components/ui/input";
+import { useUserAuth } from "@/context/userAuthContext";
+import { getPost } from "@/repository/post.service";
+import { DocumentResponse } from "@/types";
+import { Search } from "lucide-react";
+import * as React from "react";
+import { RenderPosts } from "../profile/RenderPost"; // Kept as import
+import PostCard from "@/components/postcard"; // Assuming this exists
 
-//Type
-import { DocumentResponse } from '@/types';
+interface IHomeProps {}
 
-//Context
-import { userAuthContext } from '@/context/userAuthContext';
-
-//Services
-import { getPosts } from '@/repository/post.service';
-
-//Components
-import Layout from '@/components/layout';
-import Postcard from '@/components/postCard';
-import Stories from '@/components/stories';
-import { Input } from '@/components/ui/input';
-
-const Home: FC = () => {
-  const { user } = useContext(userAuthContext);
-  const [data, setData] = useState<DocumentResponse[]>([]);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
+const Home: React.FunctionComponent<IHomeProps> = (props) => {
+  const { user } = useUserAuth();
+  const [data, setData] = React.useState<DocumentResponse[]>([]);
 
   const getAllPost = async () => {
-    const res = await getPosts();
-    if (res) setData(res);
+    try {
+      const response: DocumentResponse[] = (await getPost()) || [];
+      console.log("The response is:", response);
+      setData(response);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
   };
 
-  useEffect(() => {
-    if (user != null) {
+  React.useEffect(() => {
+    if (user) {
       getAllPost();
     }
-  }, []);
+  }, [user]); // Added user as dependency
 
-  const renderPosts = () => {
-    return data.map((item) => {
-      return <Postcard data={item} key={item.id} />;
-    });
+  const renderPostItems = () => {
+    return data.map((item) => <PostCard data={item} key={item.id} />);
   };
-
-  // Toggle Dark Mode
-  const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
   return (
     <Layout>
-      <div className={`flex flex-col md:px-8 ${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-100 text-gray-800'}`}>
-        {/* Toggle Dark Mode Button */}
-        <div className="flex justify-end my-4">
-          <button
-            onClick={toggleDarkMode}
-            className="px-4 py-2 rounded-md text-sm font-medium bg-purple-500 text-white hover:bg-purple-600 focus:outline-none"
-          >
-            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-          </button>
-        </div>
-
+      <div className="flex flex-col items-center">
         {/* Search Bar */}
-        <div className="relative mb-6 w-full">
+        <div className="relative w-full max-w-md bg-gray-100 p-4 rounded-lg shadow-lg">
           <Input
-            className={`h-12 w-full rounded-full border ${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-gray-700'}  pr-14 shadow-sm focus:outline-none`}
-            placeholder="Search for posts or users..."
+            className="w-full border-2 border-gray-300 rounded-md pr-12"
+            placeholder="Search..."
             type="search"
             name="search"
           />
           <button
             type="submit"
-            className={`absolute right-4 top-2.5 flex items-center justify-center h-7 w-7 rounded-full ${isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-purple-500 text-white'} hover:bg-purple-600 focus:ring-2 focus:ring-purple-300`}
+            aria-label="Search"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
           >
-            <Search className="h-4 w-4" />
+            <Search className="w-5 h-5" />
           </button>
         </div>
 
         {/* Stories Section */}
-        <div className="mb-8">
-          <h2 className="mb-4 text-lg font-semibold">Stories</h2>
-          <div className={`rounded-lg p-4 shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-            <Stories />
-          </div>
+        <div className="mb-5 w-full">
+          <h2 className="mb-5 text-lg font-semibold">Stories</h2>
+          <Stories />
         </div>
 
         {/* Feed Section */}
-        <div>
-          <h2 className="mb-4 text-lg font-semibold">Feed</h2>
-          <div className="flex w-full justify-center">
-            <div className="flex max-w-md flex-col ">
-              {data ? renderPosts() : <div className="text-gray-500">...Loading</div>}
+        <div className="mb-5 w-full">
+          <h2 className="mb-5 text-lg font-semibold">Feed</h2>
+          <div className="w-full flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {data.length > 0 ? renderPostItems() : <div>No Post Found</div>}
             </div>
           </div>
         </div>
