@@ -8,6 +8,7 @@ import Profile from "./pages/profile";
 import MyPhotos from "./pages/myphotos";
 import ProtectedRoutes from "./components/protectedRoutes";
 import Notifications from "./pages/notifications";
+import Direct from "./pages/direct";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,11 @@ export const router = createBrowserRouter([
       {
         path: "/notifications",
         element: <Notifications />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/direct",
+        element: <Direct />,
         errorElement: <Error />,
       },
     ],

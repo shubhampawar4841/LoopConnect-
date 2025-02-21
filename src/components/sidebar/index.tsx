@@ -43,7 +43,7 @@ const navItems = [
   },
   {
     name: "Direct",
-    link: "#",
+    link: "/direct",
     icon: directIcon,
   },
   {
