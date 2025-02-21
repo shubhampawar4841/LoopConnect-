@@ -9,7 +9,7 @@ import MyPhotos from "./pages/myphotos";
 import ProtectedRoutes from "./components/protectedRoutes";
 import Notifications from "./pages/notifications";
 import Direct from "./pages/direct";
-
+import EditProfile from "./pages/profile/EditProfile";
 export const router = createBrowserRouter([
   {
     element: <ProtectedRoutes />,
@@ -38,6 +38,11 @@ export const router = createBrowserRouter([
         path: "/notifications",
         element: <Notifications />,
         errorElement: <Error />,
+      },
+      {
+        path: '/edit-profile',
+        element: <EditProfile />,
+        errorElement: <Error />
       },
       {
         path: "/direct",

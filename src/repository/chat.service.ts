@@ -1,47 +1,40 @@
-/*************  ✨ Codeium Command 🌟  *************/
-import { db } from '@/utils/firebase'
-import { collection, doc, getDocs, setDoc, updateDoc, arrayUnion, query, orderBy } from 'firebase/firestore'
+import { db } from "@/utils/firebase";
+import { collection, addDoc, query, orderBy, onSnapshot, where, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where } from "firebase/firestore";
 
-interface Message {
-  senderId: string
-  text: string
-  timestamp: number
-}
+export const sendMessage = async (senderId, receiverId, text) => {
+    if (!senderId || !receiverId || !text) {
+      console.error("Invalid message data:", { senderId, receiverId, text });
+      return;
+    }
+  
+    const chatId = [senderId, receiverId].sort().join("_");
+  
+    try {
+      const chatRef = doc(db, "chats", chatId);
+      const chatDoc = await getDoc(chatRef);
+      if (!chatDoc.exists()) {
+        await setDoc(chatRef, { members: [senderId, receiverId] });
+      }
+  
+      await addDoc(collection(chatRef, "messages"), {
+        senderId,
+        receiverId,
+        text,
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
+  };
+  
 
-/**
- * Fetch all users except the logged-in user
- */
-export const getUsers = async () => {
-  const usersRef = collection(db, 'users')
-  const snapshot = await getDocs(usersRef)
-  const users = snapshot.docs.map((doc) => ({
-    uid: doc.id,
-    ...doc.data()
-  }))
+export const getMessages = (senderId, receiverId, setMessages) => {
+  const chatId = [senderId, receiverId].sort().join("_");
+  const messagesQuery = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp"));
+  
+  return onSnapshot(messagesQuery, (snapshot) => {
+    setMessages(snapshot.docs.map((doc) => doc.data()));
+  });
+};
 
-  return users
-}
-
-/**
- * Send a message between two users
- */
-export const sendMessage = async (senderId: string, receiverId: string, message: Message) => {
-  const chatId = [senderId, receiverId].sort().join('_') // Unique chat ID
-
-  const chatRef = doc(db, 'chats', chatId)
-  await setDoc(chatRef, { messages: [] }, { merge: true }) // Ensure chat document exists
-  await updateDoc(chatRef, {
-    messages: arrayUnion(message) // Append new message
-  })
-}
-
-/**
- * Retrieve messages between two users
- */
-export const getMessages = async (userId: string, otherUserId: string) => {
-  const chatId = [userId, otherUserId].sort().join('_')
-  const chatRef = doc(db, 'chats', chatId)
-  const snapshot = await getDocs(query(collection(chatRef, 'messages'), orderBy('timestamp', 'asc')))
-
-  return snapshot.docs.map((doc) => doc.data() as Message)
-}
