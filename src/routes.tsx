@@ -7,6 +7,7 @@ import CreatePost from "./pages/post";
 import Profile from "./pages/profile";
 import MyPhotos from "./pages/myphotos";
 import ProtectedRoutes from "./components/protectedRoutes";
+import Notifications from "./pages/notifications";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ export const router = createBrowserRouter([
       {
         path: "/myphotos",
         element: <MyPhotos />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/notifications",
+        element: <Notifications />,
         errorElement: <Error />,
       },
     ],

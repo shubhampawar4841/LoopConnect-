@@ -38,7 +38,7 @@ const navItems = [
   },
   {
     name: "Notifications",
-    link: "#",
+    link: "/notifications",
     icon: notificationIcon,
   },
   {
@@ -58,7 +58,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   return (
     <nav className="flex flex-col relative h-screen max-w-sm w-full">
       <div className="flex justify-center m-5">
-        <div className="text-white text-lg">PhotoGram</div>
+        <div className="text-white text-lg">LoopConnect</div>
       </div>
       {navItems.map((item) => (
         <div

@@ -1,78 +1,72 @@
-import Layout from "@/components/layout";
-import Stories from "@/components/stories";
-import { Input } from "@/components/ui/input";
-import { useUserAuth } from "@/context/userAuthContext";
-import { getPost } from "@/repository/post.service";
-import { DocumentResponse } from "@/types";
-import { Search } from "lucide-react";
-import * as React from "react";
-import { RenderPosts } from "../profile/RenderPost"; // Kept as import
-import PostCard from "@/components/postcard"; // Assuming this exists
+import { Search } from 'lucide-react'
+import { useContext, useEffect, useState, type FC } from 'react'
 
-interface IHomeProps {}
+//Type
+import { DocumentResponse } from '@/types'
 
-const Home: React.FunctionComponent<IHomeProps> = (props) => {
-  const { user } = useUserAuth();
-  const [data, setData] = React.useState<DocumentResponse[]>([]);
+//Context
+import { userAuthContext } from '@/context/userAuthContext'
+
+//Services
+import { getPosts } from '@/repository/post.service'
+
+//Components
+import Layout from '@/components/layout'
+import Postcard from '@/components/postcard'
+import Stories from '@/components/stories'
+import { Input } from '@/components/ui/input'
+
+const Home: FC = () => {
+  const { user } = useContext(userAuthContext)
+  const [data, setData] = useState<DocumentResponse[]>([])
 
   const getAllPost = async () => {
-    try {
-      const response: DocumentResponse[] = (await getPost()) || [];
-      console.log("The response is:", response);
-      setData(response);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
+    const res = await getPosts()
+    if (res) setData(res)
+  }
 
-  React.useEffect(() => {
-    if (user) {
-      getAllPost();
+  useEffect(() => {
+    if (user != null) {
+      getAllPost()
     }
-  }, [user]); // Added user as dependency
+  }, [])
 
-  const renderPostItems = () => {
-    return data.map((item) => <PostCard data={item} key={item.id} />);
-  };
+  const renderPosts = () => {
+    return data.map((item) => {
+      return <Postcard data={item} key={item.id} />
+    })
+  }
 
   return (
     <Layout>
-      <div className="flex flex-col items-center">
-        {/* Search Bar */}
-        <div className="relative w-full max-w-md bg-gray-100 p-4 rounded-lg shadow-lg">
+      <div className='flex flex-col'>
+        <div className='relative mb-6 w-full text-gray-600'>
           <Input
-            className="w-full border-2 border-gray-300 rounded-md pr-12"
-            placeholder="Search..."
-            type="search"
-            name="search"
+            className='h-10 rounded-sm border-2 border-gray-300 bg-white px-5 pr-8 text-base focus:outline-none'
+            placeholder='search'
+            type='search'
+            name='search'
           />
-          <button
-            type="submit"
-            aria-label="Search"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-          >
-            <Search className="w-5 h-5" />
+          <button type='submit' className='absolute right-2.5 top-2.5'>
+            <Search className='h-5 w-5 text-gray-400' />
           </button>
         </div>
 
-        {/* Stories Section */}
-        <div className="mb-5 w-full">
-          <h2 className="mb-5 text-lg font-semibold">Stories</h2>
+        <div className='mb-5 overflow-y-auto'>
+          <h2 className='mb-5'>Stories</h2>
           <Stories />
         </div>
 
-        {/* Feed Section */}
-        <div className="mb-5 w-full">
-          <h2 className="mb-5 text-lg font-semibold">Feed</h2>
-          <div className="w-full flex justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {data.length > 0 ? renderPostItems() : <div>No Post Found</div>}
+        <div className='mb-5'>
+          <h2 className='mb-5'>Feed</h2>
+          <div className='flex w-full justify-center'>
+            <div className='flex max-w-sm flex-col overflow-hidden rounded-sm'>
+              {data ? renderPosts() : <div>...Loading</div>}
             </div>
           </div>
         </div>
       </div>
     </Layout>
-  );
-};
-
-export default Home;
+  )
+}
+export default Home
