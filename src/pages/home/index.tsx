@@ -5,7 +5,7 @@ import { useContext, useEffect, useState, type FC } from 'react'
 import { DocumentResponse } from '@/types'
 
 //Context
-import { userAuthContext } from '@/context/userAuthContext'
+import { userAuthContext } from '@/context/UserAuthContext'
 
 //Services
 import { getPosts } from '@/repository/post.service'

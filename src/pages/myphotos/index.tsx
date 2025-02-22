@@ -2,7 +2,7 @@ import { HeartIcon } from 'lucide-react'
 import { useContext, useEffect, useState, type FC } from 'react'
 
 //Context
-import { userAuthContext } from '@/context/userAuthContext'
+import { userAuthContext } from '@/context/UserAuthContext'
 
 //Services
 import { getPostByUserId } from '@/repository/post.service'

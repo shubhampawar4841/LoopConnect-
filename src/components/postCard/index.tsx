@@ -11,7 +11,7 @@ import type { DocumentResponse, LikesInfo } from '@/types'
 import { updateLikesOnPost } from '@/repository/post.service'
 
 // Context
-import { userAuthContext } from '@/context/userAuthContext'
+import { userAuthContext } from '@/context/UserAuthContext'
 
 // Components
 import {

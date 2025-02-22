@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Icons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
-import { useUserAuth } from "@/context/userAuthContext";
+import { useUserAuth } from "@/context/UserAuthContext";
 import image1 from "@/assets/images/image1.jpg";
 import image2 from "@/assets/images/image2.jpg";
 import image3 from "@/assets/images/image3.jpg";

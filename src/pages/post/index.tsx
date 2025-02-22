@@ -4,7 +4,7 @@ import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useUserAuth } from "@/context/userAuthContext";
+import { useUserAuth } from "@/context/UserAuthContext";
 import { createPost } from "@/repository/post.service";
 import { FileEntry, PhotoMeta, Post } from "@/types";
 import * as React from "react";

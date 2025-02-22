@@ -11,7 +11,7 @@ import profileIcon from "@/assets/icons/profile.svg";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
-import { useUserAuth } from "@/context/userAuthContext";
+import { useUserAuth } from "@/context/UserAuthContext";
 
 interface ISidebarProps {}
 

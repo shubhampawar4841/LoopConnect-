@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { userAuthContext } from "@/context/userAuthContext";
+import { userAuthContext } from "@/context/UserAuthContext";
 import { getUsers } from "@/repository/user.service";
 import { getMessages, sendMessage } from "@/repository/chat.service";
 import { MessageCircle } from "lucide-react";
